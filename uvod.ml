@@ -124,12 +124,12 @@ let zavrti n l =
  - : int list = [2; 3; 2; 3]
  ---------- *)
 
-let pobrisi x l = 
+let rec pobrisi x l = 
+	match l with   
+	|[] -> []
+	|hd ::tl -> if hd = x then pobrisi x tl else hd :: pobrisi x tl 
 	
-	let (hd, tl) = razdeli 1 l in
-	match x ::[] with
-	| 
-
+	
 (* Funkcija "je_palindrom l" ugotovi ali seznam l predstavlja palindrom.
  Namig: Pomagaj si s pomožno funkcijo, ki obrne vrstni red elementov seznama. 
  ----------
@@ -139,7 +139,14 @@ let pobrisi x l =
  - : bool = false
  ---------- *)
  
-let je_palindrom l = ()
+let je_palindrom l = 
+	
+	let rec obrni = function
+	| [] -> []
+	|hd ::tl -> obrni tl @ [hd] in
+	
+	l = obrni l 
+	
   
 (* Funkcija "max_po_komponentah l1 l2" vrne seznam, ki ima za elemente
  večjega od elementov na ustreznih mestih v seznamih l1 in l2.
@@ -148,7 +155,11 @@ let je_palindrom l = ()
  # max_po_komponentah [5; 4; 3; 2; 1] [0; 1; 2; 3; 4; 5; 6];;
  - : int list = [5; 4; 3; 3; 4]
  ---------- *)
-let max_po_komponentah l1 l2 = ()
+let rec max_po_komponentah l1 l2 = 
+	match (l1, l2) with
+	|([],_) -> []
+	|(_,[]) -> []
+	|(hd1 :: tl1, hd2 :: tl2) -> max hd1 hd2 :: max_po_komponentah tl1 tl2
   
 (* Funkcija "drugi_najvecji l" vrne drugo največjo vrednost v seznamu l.
  Ponovitve elementa se štejejo kot ena vrednost.
@@ -159,4 +170,11 @@ let max_po_komponentah l1 l2 = ()
  - : int = 10
  ---------- *)
  
-let drugi_najvecji l = ()
+let drugi_najvecji l = 
+	let rec najvecji = function
+		|[] -> failwith "prekratek"
+		|hd :: [] -> hd
+		|hd ::tl -> max hd najvecji tl
+	in
+	najvcji (pobrisi (najvecji l) l)
+
