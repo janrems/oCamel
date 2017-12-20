@@ -144,13 +144,15 @@ end
    Deljenje je zahtevnejše, zato si ga lahko s 'failwith' trikom pustiš za kasneje.
  *)
  
-(*
+
 module Cartesian : COMPLEX = struct
   type t = {re : float; im : float}
-  let eq x y = x.re = y.re && ...
-  ...
+  let eq x y = x.re = y.re && x.im = y.im
+  let zero = {re=0 ; im = 0}
+  let neg {re;im} = {re = -.re;im = -.im}
+  
 end
- *)
+ 
 
 
 (* Sedaj napiši še polarno implementacijo kompleksnih števil (torej z = r e^(i*fi) ).
