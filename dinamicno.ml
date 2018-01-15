@@ -15,6 +15,7 @@ let test_matrix = [| [| 1 ; 2 ; 0 |];
                      [| 2 ; 4 ; 5 |];
                      [| 7 ; 0 ; 1 |]  |]
 
+					 
 let rec max_cheese cheese_matrix = 
 	let max_v = Array.length cheese_matrix -1 in 
 	let max_s = Array.length cheese_matrix.(0) -1 in 
@@ -49,4 +50,27 @@ let rec max_cheese cheese_matrix =
    - : int = 35
    ---------- *)
 
-let alternating_towers height = ()
+let rec alternating_towers height = 
+	if (height = 1) then
+		1
+	else 
+		let rec max_rdeci visina =
+			match visina with
+			|0 -> 0
+			|1|2 -> 1
+			|visina ->  max_modri (visina-1) + max_modri (visina -2)
+		and max_modri visina =
+			match visina with
+			|0|1 -> 0
+			|2 -> 1
+			|3 -> 2
+			|visina -> max_rdeci (visina-2) + max_rdeci (visina-3) in
+	max_rdeci height + max_modri height
+	
+	
+	
+	
+	
+	
+	
+	
