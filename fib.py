@@ -28,7 +28,7 @@ def fib_cache(n):
 
 
 # Define fib recursively and manually memoize results.
-def fib_memo_rec(n):
+#def fib_memo_rec(n):
 
 # Make a new drawing where you merge the repeated nodes in the tree. Which
 # subproblems does each call depend on directly?
@@ -37,8 +37,8 @@ def fib_memo_rec(n):
 
 
 # Define fib as a dynamic program that fills up the table of results from the bottom.
-def fib_memo_iter(n):
+#def fib_memo_iter(n):
 
 # Define fib as a dynamic program that only keeps those intermediate results
 # around that are needed to compute the next step.
-def fib_iter(n):
+#def fib_iter(n):
