@@ -42,15 +42,14 @@
 
 module type NAT = sig
     type t
-    val eq   : t -> t -> bool
+    val eq : t -> t -> bool
     val zero : t
 	val one : t
-	val add : t -> t -> t
+	val add : t -> t -> t 
 	val sub : t -> t -> t
 	val mult : t -> t -> t
-	val of_int : int -> t
-	val to_int : t -> int
-	
+	val int_of_nat : t -> int
+	val nat_of_int : int -> t
   end
 
 
@@ -60,17 +59,17 @@ module type NAT = sig
    pritoževal. Temu se lahko izogneš tako, da funkcije, ki jih še niso napisane
    nadomestiš s 'failwith "later"'. *)
  
-  
+ 
 module Nat_int : NAT = struct
 	type t = int
+	let eq  = (=)
 	let zero = 0
 	let one = 1
-	let eq x y = (x = y)
-	let add x y = x+y
-	let sub x y = max (x - y) 0
-	let mult x y = x*y
-	let of_int x = max x 0
-	let to_int x = x
+	let add t1 t2 = t1 +t2
+	let sub t1 t2 = max (t1 - t2) 0
+	let mult t1 t2 = t1*t2
+	let int_of_nat t = t
+	let nat_of_int t = max t 0
 end
 
 
@@ -84,61 +83,62 @@ end
 
 
 
-module Peano : NAT = struct
-  type t = Zero| Successor of t
+module Nat_Pean :NAT = struct
+  type t = Zero | Successor of t 
+  let rec eq x y = 
+	match (x,y) with 
+	|(Zero,Zero) -> true
+	|(Zero,_)|(_,Zero) -> false
+	|(Successor a, Successor b) -> eq a b 
   let zero = Zero
   let one = Successor Zero
-  let rec eq x y = 
-	match x,y with
-	|Zero,Zero -> true
-	|Zero,_ -> false
-	|_,Zero -> false
-	|Successor  z, Successor  v -> eq z v 
-  
-  let rec add x y = 
-	match x with
-	|Zero -> y
-	|Successor z -> add (z) (Successor y)
-	
-  let rec sub x y = 
-	match x, y with 
-	|Zero, _ -> Zero
-	|x,Zero -> x
-	|Successor z, Successor v -> sub z v
-	
-  let rec of_int x = 
-	match x with
+  let rec add t1 t2 =
+	match (t1,t2) with
+	|(Zero,Zero) -> Zero
+	|(t1,Zero) -> t1
+	|(Zero,t2) -> t2
+	|(t1,Successor t2) -> add (Successor t1) t2
+  let rec sub t1 t2 = 
+	match (t1,t2) with
+	|(Zero,Zero) -> Zero
+	|(t1,Zero) -> t1
+	|(Zero,t2) -> Zero
+	|(Successor a,Successor b) -> sub a b 
+  let rec mult t1 t2 = 
+	match (t1,t2) with 
+	|(_,Zero)|(Zero,_) -> Zero
+	|(t1,Successor b) -> add t1 (mult t1 b)
+  let rec nat_of_int t = 
+	match t with 
 	|0 -> Zero
-	|x -> if x < 0 then Zero 
-			else Successor (of_int (x-1))
-
-  let rec to_int x =
-	match x with
+	|x -> if x < 0 then Zero
+			else Successor (nat_of_int (x-1))
+  let rec int_of_nat t = 
+	match t with
 	|Zero -> 0
-	|Successor x -> (to_int x) + 1
+	|Successor x -> (int_of_nat x) +1
 	
-  let mult x = failwith "sadsd"  
 end
- 
+
 
 (* Definiraj signaturo modula kompleksnih števil.
    Potrebujemo osnovni tip, test enakosti, ničlo, enko, imaginarno konstanto i,
    negacijo števila, konjugacijo, seštevanje, množenje, deljenje in inverz. *)
 
 module type COMPLEX = sig
-    type t 
-	val zero : t
+    type t
+    val eq : t -> t -> bool
+    val zero : t
 	val one : t
 	val i : t
-    val eq : t -> t -> bool
-    val neg : t
-	val konj : t
-	val add : t -> t -> t
+	val neg : t -> t
+	val konj : t -> t
+	val add : t -> t-> t
 	val mult : t -> t -> t
 	val div : t -> t -> t
 	val inv : t -> t
   end
- 
+
 
 (* Napiši kartezično implementacijo kompleksnih števil (torej z = x + iy).
    Deljenje je zahtevnejše, zato si ga lahko s 'failwith' trikom pustiš za kasneje.
@@ -147,18 +147,15 @@ module type COMPLEX = sig
 
 module Cartesian : COMPLEX = struct
   type t = {re : float; im : float}
-  let eq x y = x.re = y.re && x.im = y.im
-  let zero = {re=0.0 ; im = 0.0}
-  let neg {re;im} = {re = -.re;im = -.im}
-  let i = failwith "asdad"
-  let one = failwith "asdad"
-  let konj = failwith "asdad"
-  let add = failwith "asdad"
-  let mult = failwith "asdad"
-  let div = failwith "asdad"
-  let inv = failwith "asdad"
-  
-  
+  let eq x y = (x.re = y.re) && (x.im = y.im)
+  let zero = {re = 0; im = 0}
+  let one = {re = 1 ; im = 0}
+  let i = {re = 0;im = 1}
+  let neg z = {re = - z.re; im = - z.im}
+  let konj z = {re = z.re;im = -z.im}
+  let add z1 z2 = {re = z1.re + z2.re; im = z1.im + z2.im}
+  let mult z1 z2 = {re = z1.re*z2.re - z1.im*z2.im; im = z1.re*z2.im + z1.im*z2.re}
+  let div z1 z2 = {re = (z1.re*z2.re + z1.im*z2.im)/z2.re*z2.re 
 end
  
 
